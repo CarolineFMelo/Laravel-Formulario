@@ -111,4 +111,10 @@ class ControladorCategoria extends Controller
         }
         return redirect('/categorias');
     }
+
+    public function indexjson()
+    {
+        $cats = Categoria::all();
+        return json_encode($cats);
+    }
 }

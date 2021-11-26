@@ -18,12 +18,7 @@ Route::get('/', function () {
     return view('index');
 });
 
-Route::get('/produtos', [ControladorProduto::class, 'index']);
-Route::get('produtos/novo', [ControladorProduto::class, 'create']);
-Route::post('/produtos', [ControladorProduto::class, 'store']);
-Route::get('/produtos/apagar/{id}', [ControladorProduto::class, 'destroy']);
-Route::get('/produtos/editar/{id}', [ControladorProduto::class, 'edit']);
-Route::post('/produtps/{id}', [ControladorProduto::class, 'update']);
+Route::get('/produtos', [ControladorProduto::class, 'indexView']);
 
 Route::get('/categorias', [ControladorCategoria::class, 'index']);
 Route::get('/categorias/novo', [ControladorCategoria::class, 'create']);
