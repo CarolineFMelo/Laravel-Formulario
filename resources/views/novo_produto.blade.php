@@ -15,6 +15,7 @@
                     <input type="number" class="form-control" name="precoProduto" id="precoProduto" placeholder="0.00">
                     <label for="categoriaProduto">Categoria</label>
                     <select name="categoriaProduto" id="categoriaProduto">
+                        {{--  fazer as opções do select serem as categorias cadastradas no banco  --}}
                         @foreach
                             <option value="{{ $cat->id }}">{{ $cat->nome }}</option>
                         @endforeach
