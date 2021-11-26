@@ -37,6 +37,17 @@ class ControladorCategoria extends Controller
      */
     public function store(Request $request)
     {
+        // validação do formulário com mensagens personalizadas
+        $regras = [
+            'nomeCategoria' => 'required'
+        ];
+
+        $mensagens = [
+            'required' => 'O campo :attribute não pode estar em branco.'
+        ];
+
+        $request->validate($regras, $mensagens);
+
         $cat = new Categoria();
         $cat->nome = $request->input('nomeCategoria');
         $cat->save();
