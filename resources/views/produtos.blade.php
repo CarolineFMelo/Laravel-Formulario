@@ -55,10 +55,9 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="categoriaProduto" class="control-label">categoria</label>
+                            <label for="categoriaProduto" class="control-label">Categoria</label>
                             <div class="input-group">
                                 <select class="form-control" id="categoriaProduto">
-
                                 </select>
                             </div>
                         </div>
@@ -108,11 +107,45 @@
                 "<td>" + p.preco + "</td>" +
                 "<td>" + p.categoria_id + "</td>" +
                 "<td>" + 
-                    '<button class="btn btn-sm btn-primary">Editar</button> ' + 
-                    '<button class="btn btn-sm btn-danger">Apagar</button> ' +
+                    '<button class="btn btn-sm btn-primary" onClick="editar(' + p.id + ')">Editar</button> ' + 
+                    '<button class="btn btn-sm btn-danger" onClick="remover(' + p.id + ')">Apagar</button> ' +
                 "</td>" +
                 "<tr>";
             return linha;
+        }
+
+        function editar(id) {
+            $.getJSON('/api/produtos/' + id , function(data){
+                console.log(data);
+                $('#id').val(data.id);
+                $('#nomeProduto').val(data.nome);
+                $('#precoProduto').val(data.preco);
+                $('#quantidadeProduto').val(data.estoque);
+                $('#categoriaProduto').val(data.categoria_id);
+                $('#dlgProdutos').modal('show')
+            });
+        }
+
+        function remover(id) {
+            $.ajax({
+                type: "DELETE",
+                url: "/api/produtos/" + id,
+                context: this,
+                success: function() {
+                    console.log('Apagou OK');
+                    linhas = $("#tabelaProdutos>tbody>tr>td:first-child");
+                    e = linhas.filter( function(i, elemento) {
+                        return elemento.textContent == id;
+                    } );
+                    if (e) { 
+                        e.parent('tr').remove();
+                    }
+                       
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
         }
 
         function carregarProdutos() {
@@ -123,6 +156,64 @@
                 }
             });
         }
+
+        function criarProduto() {
+            prod = { 
+                nome: $("#nomeProduto").val(),
+                preco: $("#precoProduto").val(),
+                estoque: $("#quantidadeProduto").val(),
+                categoria_id: $("#categoriaProduto").val()
+            };
+            $.post("/api/produtos", prod, function(data) {
+                produto = JSON.parse(data);
+                linha = montarLinha(produto);
+                $('#tabelaProdutos>tbody').append(linha);
+            });
+        }
+
+        function salvarProduto() {
+            prod = {
+                id: $("#id").val(),
+                nome: $("#nomeProduto").val(),
+                preco: $("#precoProduto").val(),
+                estoque: $("#quantidadeProduto").val(),
+                categoria_id: $("#categoriaProduto").val()
+            };
+
+            // arrumar essa função para carregar automático o produto carregado
+            $.ajax({
+                type: "PUT",
+                url: "/api/produtos/" + prod.id,
+                context: this,
+                data: prod,
+                success: function(data) {
+                    prod = JSON.parse(data);
+                    linhas = $("#tabelaProdutos>tbody>tr");
+                    e = linhas.filter( function(i, e) {
+                        return ( e.cells[0].textContent == data.id )
+                    } );
+                    if (e) {
+                        e[0].cells[0].textContent = prod.id;
+                        e[0].cells[1].textContent = prod.nome;
+                        e[0].cells[2].textContent = prod.estoque;
+                        e[0].cells[3].textContent = prod.preco;
+                        e[0].cells[4].textContent = prod.categoria_id;
+                    }
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        }
+
+        $("#formProduto").submit( function(event) {
+            event.preventDefault();
+            if ($("#id").val() != '')
+                salvarProduto();
+            else
+                criarProduto();
+            $("#dlgProdutos").modal('hide');
+        } );
 
         $(function(){
             carregarCategorias();
