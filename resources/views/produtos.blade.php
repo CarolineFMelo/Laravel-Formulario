@@ -64,7 +64,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">Salvar</button>
-                        <button type="cancel" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="reset" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                     </div>
                 </form>
             </div>
@@ -180,7 +180,7 @@
                 categoria_id: $("#categoriaProduto").val()
             };
 
-            // arrumar essa função para carregar automático o produto carregado
+            // arrumar essa função para carregar automático o produto editado
             $.ajax({
                 type: "PUT",
                 url: "/api/produtos/" + prod.id,
@@ -190,7 +190,7 @@
                     prod = JSON.parse(data);
                     linhas = $("#tabelaProdutos>tbody>tr");
                     e = linhas.filter( function(i, e) {
-                        return ( e.cells[0].textContent == data.id )
+                        return ( e.cells[0].textContent == prod.id )
                     } );
                     if (e) {
                         e[0].cells[0].textContent = prod.id;
